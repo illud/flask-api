@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  </head>
+  <body style="background-color: #222">
+  
+    <ul id="messages"></ul>
+    <input id="myMessage" type="text">
+    <button id="send">Send</button>
+    <audio id="mySong" src="https://s0.vocaroo.com/media/download_temp/Vocaroo_s0Eh7Cj4mvB6.mp3"></audio>
+    <script
+      src="http://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+  <script>
+
+toastr.options = {
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": false,
+  "positionClass": "toast-top-full-width",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
+
+  //sounds array
+
+
+  var audio = new Audio("/static/test.mp3");
+audio.play();
+    const socket = io()
+
+
+    //socket.emit('message', 'hello')
+
+    socket.on('message', function(msg) {
+      $('#messages').append('<li>' + msg + '</li>')
+      toastr.success('Nuevo ingreso')
+      toastr.info('Nueva busqueda tatuajes')
+    })
+
+    $('#send').on('click', function() {
+      socket.send($('#myMessage').val());
+      $('#myMessage').val('');
+    })
+
+    //new online user
+    socket.on('new_online_user', function(new_online_user) {
+      toastr.success('Nuevo ingreso', new_online_user.data)
+    })
+
+    //new searchonline user
+    socket.on('new_search', function(new_search) {
+      toastr.info('Nueva busqueda', new_search.data)
+    })
+
+  </script>
+</body>
+</html>
